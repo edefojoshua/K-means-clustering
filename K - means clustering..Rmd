@@ -1,0 +1,108 @@
+---
+title: "K-means clustering"
+author: "Joshua Edefo"
+date: "2024-07-27"
+email: "edefojoshua2000@yahoo.com"
+output: github_document
+---
+library
+```{r setup, meessage =FALSE}
+library(tidyverse)
+```
+Load the Iris dataset
+
+```{r a}
+data(USArrests)
+head (USArrests)
+str (USArrests)
+```
+put in data frame
+
+```{r b}
+df <- data.frame (USArrests)
+```
+Remove rows with missing values & Scale each variable
+
+```{r c}
+df <- na.omit(df)
+
+df <- scale(df)
+
+```
+Methods of finding k
+
+Elbow Plot: Next, create a plot of the number of clusters vs. the total within sum of squares (WCSS). 
+
+The WCSS measures the variability within each cluster. We’ll use the fviz_nbclust() function from the factoextra package
+
+
+```{r d}
+library(cluster)
+library(factoextra)
+```
+ Create plot of number of clusters vs. WCSS # elbow method
+
+```{r e}
+fviz_nbclust(df, kmeans, method = "wss")
+# the optimal value is 4
+
+```
+Create plot of number of clusters vs. silhouette # silhuoette method
+
+```{r f}
+fviz_nbclust(df, kmeans, method = "silhouette")
+# the optimal value is 2
+```
+Create plot of number of clusters vs. gap_stat # gap_stat method
+
+```{r g}
+fviz_nbclust(df, kmeans, method = "gap_stat")
+# the optimal value is 2
+
+```
+ K- means Clustering when k = 4
+
+```{r h}
+# Specify the number of clusters (k)
+k <- 2
+# Perform k-means clustering
+kmeans_result <- kmeans(df, centers = k, nstart = 25)
+kmeans_result
+
+```
+K- means Clustering when k = 2
+
+```{r i}
+# Specify the number of clusters (k)
+k <- 2
+# Perform k-means clustering
+kmeans_result <- kmeans(df, centers = k, nstart = 25)
+kmeans_result
+
+
+```
+Add the cluster assignments to the original dataset
+
+```{r j}
+USArrests$Cluster <- as.factor(kmeans_result$cluster)
+USArrests$Cluster
+
+```
+Visualize the clusters
+
+```{r k}
+library(ggplot2)
+
+ggplot(USArrests, aes(x = Assault , y = UrbanPop, color = Cluster)) +
+  geom_point() +
+  labs(title = "K-means Clustering of USArrests", x = "Assault ", y = "UrbanPop")
+
+
+```
+
+session information
+
+```{r l}
+sessionInfo()
+
+```
